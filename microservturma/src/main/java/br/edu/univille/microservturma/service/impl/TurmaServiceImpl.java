@@ -11,7 +11,7 @@ import br.edu.univille.microservturma.repository.TurmaRepository;
 import br.edu.univille.microservturma.service.TurmaService;
 
 @Service
-public class TurmaServiceImpl implements TurmaService {
+public class TurmaServiceImpl implements TurmaService{
 
     @Autowired
     private TurmaRepository repository;
@@ -23,13 +23,47 @@ public class TurmaServiceImpl implements TurmaService {
 
         iterador.forEach(listaTurmas::add);
 
-        /*while(iterador.iterator().hasNext()){
-            var umItem = iterador.iterator().next();
-            listaTurmas.add(umItem);
-        }*/
-
-
         return listaTurmas;
     }
-    
+
+    @Override
+    public Turma getById(String id) {
+        var turma = repository.findById(id);
+        if(turma.isPresent())
+            return turma.get();
+        return null;
+    }
+
+    @Override
+    public Turma saveNew(Turma turma) {
+        turma.setId(null);
+        return repository.save(turma);
+    }
+
+    @Override
+    public Turma update(String id, Turma turma) {
+        var buscaTurmaAntigo = repository.findById(id);
+        if (buscaTurmaAntigo.isPresent()){
+            var turmaAntigo = buscaTurmaAntigo.get();
+
+            //Atualizar cada atributo do objeto antigo 
+            turmaAntigo.setTurma(turma.getTurma());
+            
+            return repository.save(turmaAntigo);
+        }
+        return null;
+    }
+
+    @Override
+    public Turma delete(String id) {
+        var buscaTurma = repository.findById(id);
+        if (buscaTurma.isPresent()){
+            var turma = buscaTurma.get();
+
+            repository.delete(turma);
+
+            return turma;
+        }
+        return null;
+    }
 }
