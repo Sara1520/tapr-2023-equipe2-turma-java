@@ -1,1 +1,23 @@
-GET http://localhost:8080//api/v1/turmas 
+GET http://localhost:8080//api/v1/turmas
+
+### Buscar todas as turma GET http://localhost:8080/api/v1/turmas
+
+### Buscar turma pelo ID GET http://localhost:8080/api/v1/turmas/580c1134-0409-46e9-99a5-887b8e90636f
+
+### Inserir uma nova turma POST http://localhost:8080/api/v1/turmas Content-Type: application/json
+
+{
+"curso": "engenharia de software", "ano": {
+
+"ano":"2023"
+}
+
+}
+
+### Atualizar a turma PUT http://localhost:8080/api/v1/turmas/0e177dd4-4313-48a5-86d3-0796886c512a Content-Type: application/json
+
+{
+"ano": "2023"
+}
+
+### Remover a turma DELETE http://localhost:8080/api/v1/turmas/580c1134-0409-46e9-99a5-887b8e90636f Content-Type: application/jso

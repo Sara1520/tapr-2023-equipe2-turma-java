@@ -9,9 +9,9 @@ import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 @Container(containerName = "turma")
 public class Turma {
     @Id
+    @PartitionKey
     @GeneratedValue
     public String id;
-    @PartitionKey
     public String nomeAluno;
 
     public String getId() {
