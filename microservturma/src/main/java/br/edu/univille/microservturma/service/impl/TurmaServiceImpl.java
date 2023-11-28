@@ -4,17 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import br.edu.univille.microservturma.entity.Turma;
 import br.edu.univille.microservturma.repository.TurmaRepository;
 import br.edu.univille.microservturma.service.TurmaService;
+import ch.qos.logback.core.net.server.Client;
+import io.dapr.client.DaprClient;
+import io.dapr.client.DaprClientBuilder;
 
 @Service
 public class TurmaServiceImpl implements TurmaService{
 
     @Autowired
     private TurmaRepository repository;
+      private DaprClient client = new DaprClientBuilder().build();
+    @Value("${app.component.topic.turma}")
+    private String TOPIC_NAME;
+    @Value("${app.component.service}")
+	private String PUBSUB_NAME;
 
     @Override
     public List<Turma> getAll() {
@@ -37,7 +46,9 @@ public class TurmaServiceImpl implements TurmaService{
     @Override
     public Turma saveNew(Turma turma) {
         turma.setId(null);
-        return repository.save(turma);
+        turma = repository.save(turma);
+        publicarAtualizacao(turma);
+        return turma;
     }
 
     @Override
@@ -47,9 +58,10 @@ public class TurmaServiceImpl implements TurmaService{
             var turmaAntigo = buscaTurmaAntigo.get();
 
             //Atualizar cada atributo do objeto antigo 
-            turmaAntigo.setTurma(turma.getTurma());
-            
-            return repository.save(turmaAntigo);
+            turmaAntigo.setId()(turma.getId());
+            turmaAntigo = repository.save(turmaAntigo);
+            publicarAtualizacao(turmaAntigo);
+            return turmaAntigo;
         }
         return null;
     }
@@ -65,5 +77,12 @@ public class TurmaServiceImpl implements TurmaService{
             return turma;
         }
         return null;
+    }
+    
+    private void publicarAtualizacao(Turma turma){
+        Client.publishEvent(
+					PUBSUB_NAME,
+					TOPIC_NAME,
+					turma).block();
     }
 }
