@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.univille.microservturma.entity.Materia;
 import br.edu.univille.microservturma.service.MateriaService;
+import io.dapr.Topic;
+import io.dapr.client.domain.CloudEvent;
+
 
 @RestController
 @RequestMapping("/api/v1/materias")
@@ -82,10 +85,9 @@ public class MateriaAPIController {
     @PostMapping(path = "/event", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<Materia> atualizarMateria(@RequestBody(required = false) CloudEvent<Materia> cloudEvent){
         var materia = service.update(cloudEvent.getData());
-        System.out.println("EVENT" + ((Materia) materia).getNomeMateria());
         return 
             new ResponseEntity<Materia>
-            (HttpStatus.OK);
+            (materia, HttpStatus.OK);
     }
     
 }
