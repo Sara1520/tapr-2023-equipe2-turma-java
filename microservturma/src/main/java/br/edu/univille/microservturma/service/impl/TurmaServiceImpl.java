@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import br.edu.univille.microservturma.entity.Turma;
 import br.edu.univille.microservturma.repository.TurmaRepository;
 import br.edu.univille.microservturma.service.TurmaService;
-import ch.qos.logback.core.net.server.Client;
 import io.dapr.client.DaprClient;
 import io.dapr.client.DaprClientBuilder;
 
@@ -19,7 +18,7 @@ public class TurmaServiceImpl implements TurmaService{
 
     @Autowired
     private TurmaRepository repository;
-      private DaprClient client = new DaprClientBuilder().build();
+    private DaprClient client = new DaprClientBuilder().build();
     @Value("${app.component.topic.turma}")
     private String TOPIC_NAME;
     @Value("${app.component.service}")
@@ -58,7 +57,7 @@ public class TurmaServiceImpl implements TurmaService{
             var turmaAntigo = buscaTurmaAntigo.get();
 
             //Atualizar cada atributo do objeto antigo 
-            turmaAntigo.setId()(turma.getId());
+            turmaAntigo.setId(turma.getId());
             turmaAntigo = repository.save(turmaAntigo);
             publicarAtualizacao(turmaAntigo);
             return turmaAntigo;
@@ -80,7 +79,8 @@ public class TurmaServiceImpl implements TurmaService{
     }
     
     private void publicarAtualizacao(Turma turma){
-        Client.publishEvent(
+        
+        client.publishEvent(
 					PUBSUB_NAME,
 					TOPIC_NAME,
 					turma).block();

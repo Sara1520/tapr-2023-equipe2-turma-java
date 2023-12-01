@@ -26,11 +26,5 @@ public class Turma {
     public void setNomeAluno(String nomeAluno) {
         this.nomeAluno = nomeAluno;
     }
-    public Object getTurma() {
-        return null;
-    }
-    public void setTurma(Object turma) {
-    }
-
-    
+   
 }
